@@ -1,0 +1,55 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+drelm warrant canary
+========================
+
+As of 2026-03-23, the operators of this drelm instance:
+
+1. Have NOT received any National Security Letters or FISA court
+   orders.
+
+2. Have NOT received any gag orders preventing disclosure of
+   government data requests.
+
+3. Have NOT been subject to any searches or seizures of our
+   servers or infrastructure.
+
+4. Have NOT been compelled to modify the software to enable
+   surveillance, weaken encryption, or insert backdoors.
+
+5. Have NOT provided any user data, traffic logs, metadata,
+   or encryption keys to any third party, government or
+   otherwise.
+
+6. Have NOT received any court orders requiring the logging
+   of connection metadata, message content, or any other
+   user-identifying information.
+
+This canary is updated on the first day of each month. If this
+statement is not updated for more than 60 days, or if it
+disappears entirely, assume that one or more of the above
+statements is no longer true.
+
+This canary covers all drelm infrastructure including:
+  - The clearnet instance (drelm.org)
+  - The .onion instance
+  - All associated servers, DNS, and domain registrars
+
+Verification:
+  - This statement is PGP-signed by the operator.
+  - The signing key fingerprint is published below.
+  - Verify the signature, not just the text.
+
+Operator PGP key fingerprint:
+  AA59 B37E 3EDD 940B 4C7E  8F76 2189 BF82 F518 016D
+
+Contact: drelmorg@proton.me
+-----BEGIN PGP SIGNATURE-----
+
+iJEEARYKADkWIQSqWbN+Pt2UC0x+j3Yhib+C9RgBbQUCacHyTxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwwLDMACgkQIYm/gvUYAW1qRQEA89f6KDbrFuas42p/y3Bo
+XT43N0QrW82TbVKsXdNoXF8BANoKPmbIByP2pe4Gy8vi/1lGPNehAQL3Yg03Dp5l
+SLEH
+=ZvV3
+-----END PGP SIGNATURE-----

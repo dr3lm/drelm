@@ -1,0 +1,107 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+packages/client/dist/
+packages/server/dist/
+packages/types/dist/
+
+# Environment variables
+.env
+.env.*
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# Tor hidden service (private key material)
+docker/tor/
+docker/tor-data/
+tor/
+hidden_service/
+*.onion
+
+# TLS / SSL certificates
+ssl/
+certs/
+docker/ssl/
+*.pem
+*.crt
+*.key
+*.csr
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.truststore
+fullchain.pem
+privkey.pem
+
+# PGP / GPG key material
+*.asc
+*.gpg
+*.sig
+*.pgp
+secring.*
+pubring.*
+operator-pubkey.asc
+
+# SSH
+*.ssh/
+id_rsa
+id_ed25519
+authorized_keys
+known_hosts
+
+# Credential files
+credentials.json
+service-account.json
+*.credential
+*.secret
+token.json
+auth.json
+
+# Infrastructure secrets
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+ansible-vault-password
+vault-password.txt
+docker/secrets/
+
+# OS
+.DS_Store
+Thumbs.db
+._*
+Desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Test coverage
+coverage/
+.vitest/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Temp / backup files
+*.tmp
+*.bak
+*.orig
+*.old
+*.backup
+
+# Claude Code
+.claude/
+CLAUDE.md

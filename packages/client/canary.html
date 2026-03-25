@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>drelm — warrant canary</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #000000;
+      --fg: #ffffff;
+      --muted: #555555;
+      --border: #333333;
+      --surface: #0a0a0a;
+      --font: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ========================================
+       HEADER — matches homepage exactly
+       ======================================== */
+    #page-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      z-index: 2;
+    }
+
+    #page-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: 0.15em;
+      text-decoration: none;
+    }
+
+    #page-title:hover {
+      color: var(--fg);
+    }
+
+    #page-version {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* ========================================
+       CONTENT
+       ======================================== */
+    #canary-page {
+      min-height: 100vh;
+      padding: 80px 24px 48px;
+      animation: fadein 0.4s ease-out;
+      overflow-y: auto;
+    }
+
+    .content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .page-label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    #canary-status {
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    #canary-status.ok {
+      border-left: 2px solid #98c379;
+      color: #98c379;
+    }
+
+    #canary-status.stale {
+      border-left: 2px solid #e06c75;
+      color: #e06c75;
+    }
+
+    #canary-status.unknown {
+      border-left: 2px solid var(--muted);
+      color: var(--muted);
+    }
+
+    #canary-text {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--fg);
+      margin-bottom: 32px;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .verify-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .verify-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .verify-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 16px;
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: var(--muted);
+      margin-bottom: 16px;
+      white-space: pre;
+    }
+
+    #page-footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div id="page-header">
+    <a id="page-title" href="/">drelm</a>
+    <span id="page-version">0.1.a</span>
+  </div>
+
+  <div id="canary-page">
+    <div class="content">
+      <div class="page-label">warrant canary</div>
+
+      <div id="canary-status" class="unknown">loading canary...</div>
+
+      <div id="canary-text">loading...</div>
+
+      <hr class="section-divider">
+
+      <div class="verify-label">how to verify</div>
+      <p class="verify-text">
+        Download the signed canary and verify the PGP signature yourself.
+        Do not trust this page alone — verify the cryptographic signature.
+      </p>
+      <div class="verify-code">curl -s https://drelm.org/canary.txt -o canary.txt
+gpg --keyserver keys.openpgp.org --recv-keys AA59B37E3EDD940B4C7E8F762189BF82F518016D
+gpg --verify canary.txt</div>
+      <p class="verify-text">
+        If verification fails, or if the canary has not been updated
+        in more than 60 days, assume that one or more of the canary
+        statements may no longer be true.
+      </p>
+
+      <div id="page-footer">ephemeral, blended, encrypted communication</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var el = document.getElementById('canary-text');
+      var status = document.getElementById('canary-status');
+
+      fetch('/canary.txt')
+        .then(function (r) { return r.text(); })
+        .then(function (text) {
+          el.textContent = text;
+
+          var match = text.match(/As of (\d{4}-\d{2}-\d{2})/);
+          if (match) {
+            var canaryDate = new Date(match[1] + 'T00:00:00Z');
+            var now = new Date();
+            var daysSince = Math.floor((now.getTime() - canaryDate.getTime()) / 86400000);
+
+            if (daysSince <= 60) {
+              status.className = 'ok';
+              status.textContent = 'canary is current — last signed ' + match[1] + ' (' + daysSince + ' days ago)';
+            } else {
+              status.className = 'stale';
+              status.textContent = 'WARNING: canary is ' + daysSince + ' days old — last signed ' + match[1];
+            }
+          } else {
+            status.className = 'unknown';
+            status.textContent = 'could not parse canary date';
+          }
+        })
+        .catch(function () {
+          el.textContent = 'failed to load canary.txt';
+          status.className = 'stale';
+          status.textContent = 'WARNING: canary could not be loaded';
+        });
+    })();
+  </script>
+</body>
+</html>

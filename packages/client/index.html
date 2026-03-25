@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>drelm</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #000000;
+      --fg: #ffffff;
+      --muted: #555555;
+      --border: #333333;
+      --surface: #0a0a0a;
+      --own-bg: #111111;
+      --accent: #ffffff;
+      --font: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    .hidden { display: none !important; }
+
+    /* ========================================
+       GLOBAL WAVE BACKGROUND
+       Runs continuously behind both landing and room.
+       ======================================== */
+    #waves {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    /* ========================================
+       LANDING
+       ======================================== */
+    #landing {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 24px;
+      overflow: hidden;
+      animation: fadein 0.4s ease-out;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Fish background container */
+    #fish-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    /* Landing content above fish */
+    #landing-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    #landing-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      z-index: 2;
+    }
+
+    #landing-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: 0.15em;
+      text-decoration: none;
+    }
+
+    #landing-version {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    #logo-placeholder {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 32px;
+    }
+
+    #phrase-input {
+      background: var(--bg);
+      border: 2px solid var(--fg);
+      border-radius: 0;
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 18px;
+      padding: 16px 20px;
+      width: 100%;
+      max-width: 440px;
+      outline: none;
+      text-align: center;
+      caret-color: transparent;
+      transition: background 0.1s;
+    }
+
+    #phrase-input:focus {
+      background: #0a0a0a;
+    }
+
+    .input-cursor-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    #landing-content .input-cursor-wrap {
+      max-width: 440px;
+    }
+
+    .block-cursor {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font);
+      font-size: 18px;
+      color: var(--fg);
+      pointer-events: none;
+      opacity: 0;
+      animation: blink 1s step-end infinite;
+    }
+
+    .block-cursor.visible {
+      opacity: 1;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .block-cursor:not(.visible) {
+      animation: none;
+      opacity: 0;
+    }
+
+    #join-error {
+      color: #ff3333;
+      font-size: 14px;
+      margin-top: 16px;
+      font-weight: 700;
+    }
+
+    #phrase-hint {
+      font-size: 11px;
+      margin-top: 12px;
+      letter-spacing: 0.1em;
+      height: 16px;
+      transition: color 0.3s, opacity 0.3s;
+      opacity: 0;
+    }
+
+    #phrase-hint.visible {
+      opacity: 1;
+    }
+
+    .footer-link {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid #333;
+    }
+
+    #landing-footer {
+      position: absolute;
+      bottom: 24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      z-index: 1;
+    }
+
+    /* ========================================
+       ROOM
+       ======================================== */
+    #room {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      animation: fadein 0.3s ease-out;
+    }
+
+    #room-body {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    #room-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 24px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--fg);
+      font-size: 13px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    #room-brand {
+      background: none;
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      font-family: var(--font);
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.15s;
+    }
+
+    #room-brand:hover {
+      color: var(--fg);
+    }
+
+    #room-header .meta {
+      display: flex;
+      align-items: center;
+    }
+
+    #room-header .meta #user-count {
+      color: var(--fg);
+    }
+
+    #leave-btn {
+      background: none;
+      border: none;
+      border-radius: 0;
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 0;
+      cursor: pointer;
+      min-height: 44px;
+      min-width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.15em;
+      opacity: 0.4;
+      transition: opacity 0.15s;
+    }
+
+    #leave-btn:hover {
+      opacity: 1;
+    }
+
+    /* --- Chat column --- */
+    #chat-column {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 24px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .message {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      padding: 4px 10px;
+    }
+
+    .message .sender {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .message .text {
+      color: var(--fg);
+    }
+
+    .message.own {
+      background: var(--own-bg);
+      border-left: 2px solid var(--fg);
+    }
+
+    .message.own .sender {
+      color: var(--fg);
+      font-weight: 700;
+    }
+
+    .message.system {
+      color: var(--muted);
+      font-size: 11px;
+      padding: 12px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      text-align: center;
+    }
+
+    /* --- Message bar --- */
+    #message-bar {
+      padding: 12px 16px;
+      background: var(--bg);
+      border-top: 1px solid var(--fg);
+      flex-shrink: 0;
+    }
+
+    #message-input {
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 15px;
+      padding: 11px 14px;
+      width: 100%;
+      outline: none;
+      caret-color: transparent;
+      transition: border-color 0.15s;
+    }
+
+    #message-input:focus {
+      border-color: var(--fg);
+    }
+
+    #message-input::placeholder {
+      color: var(--muted);
+    }
+
+    /* --- User panel --- */
+    #user-panel {
+      width: 200px;
+      flex-shrink: 0;
+      border-left: 1px solid var(--fg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #user-panel-header {
+      padding: 10px 20px;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      border-bottom: 1px solid var(--fg);
+      flex-shrink: 0;
+      background: var(--bg);
+    }
+
+    #user-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 0;
+    }
+
+    .user-entry {
+      padding: 5px 20px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.03em;
+    }
+
+    .user-entry.self {
+      color: var(--fg);
+      font-weight: 700;
+    }
+
+    .user-entry.anonymous {
+      color: #2a2a2a;
+      font-style: italic;
+    }
+
+    .fingerprint {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .fingerprint svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    @media (max-width: 600px) {
+      #user-panel { display: none; }
+    }
+
+    /* --- Scrollbars --- */
+    #messages::-webkit-scrollbar,
+    #user-list::-webkit-scrollbar {
+      width: 2px;
+    }
+    #messages::-webkit-scrollbar-track,
+    #user-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    #messages::-webkit-scrollbar-thumb,
+    #user-list::-webkit-scrollbar-thumb {
+      background: var(--border);
+    }
+  </style>
+</head>
+<body>
+  <!-- Global wave background — runs through landing and room -->
+  <div id="waves" aria-hidden="true"></div>
+
+  <!-- Landing -->
+  <div id="landing">
+    <div id="fish-bg"></div>
+    <div id="landing-header">
+      <a id="landing-title" href="/">drelm</a>
+      <span id="landing-version">0.1.a</span>
+    </div>
+    <div id="landing-content">
+      <div id="logo-placeholder"></div>
+      <input
+        id="phrase-input"
+        type="text"
+        placeholder=""
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <div id="join-error" class="hidden"></div>
+      <div id="phrase-hint"></div>
+    </div>
+    <div id="landing-footer">ephemeral, blended, encrypted communication · <a href="/canary.html" class="footer-link">canary</a></div>
+  </div>
+
+  <!-- Room -->
+  <div id="room" class="hidden">
+    <div id="room-header">
+      <button id="room-brand">drelm</button>
+      <div class="meta">
+        <span><span id="user-count">1</span> in room.</span>
+      </div>
+      <button id="leave-btn">leave</button>
+    </div>
+    <div id="room-body">
+      <div id="chat-column">
+        <div id="messages"></div>
+        <div id="message-bar">
+          <input
+            id="message-input"
+            type="text"
+            placeholder=""
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
+      </div>
+      <div id="user-panel">
+        <div id="user-panel-header">users</div>
+        <div id="user-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

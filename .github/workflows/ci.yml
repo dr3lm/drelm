@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+    branches: ['*']
+
+jobs:
+  test:
+    name: Test & Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build types (other packages depend on the .d.ts output)
+        run: pnpm --filter @drelm/types build
+
+      - name: Type check
+        run: |
+          pnpm --filter @drelm/types exec tsc --noEmit
+          pnpm --filter @drelm/client exec tsc --noEmit
+          pnpm --filter @drelm/server exec tsc --noEmit
+
+      - name: Run tests
+        run: pnpm -r test --reporter=verbose
+
+      - name: Build client
+        run: pnpm --filter @drelm/client build
+
+      - name: Bundle audit — zero external requests
+        run: |
+          echo "Checking for external URLs in production bundle..."
+          EXTERNAL=$(grep -r 'https://' packages/client/dist/ | grep -v 'w3.org/2000/svg' | grep -v 'drelm.org/canary.txt' | grep -v 'keys.openpgp.org' || true)
+          if [ -n "$EXTERNAL" ]; then
+            echo "FAIL: External URLs found in bundle:"
+            echo "$EXTERNAL"
+            exit 1
+          fi
+          echo "PASS: No external URLs in bundle."
+
+      - name: Bundle audit — no source maps
+        run: |
+          if find packages/client/dist -name '*.map' | grep -q .; then
+            echo "FAIL: Source maps found in production build"
+            exit 1
+          fi
+          echo "PASS: No source maps in bundle."
+
+      - name: Bundle size check
+        run: |
+          SIZE=$(du -sk packages/client/dist/index.html | cut -f1)
+          echo "Bundle size: ${SIZE}KB"
+          if [ "$SIZE" -gt 300 ]; then
+            echo "WARN: Bundle exceeds 300KB. Review before deploying."
+          fi
