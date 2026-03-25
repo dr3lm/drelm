@@ -4,8 +4,6 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
     restart: unless-stopped
-    # No ports exposed directly — nginx proxies WebSocket traffic
-    # No volumes — server is stateless, in-memory only
     environment:
       - PORT=3000
 
@@ -14,13 +12,8 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      # Uncomment for HTTPS:
-      # - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      # Mount the built client dist/ as static files:
       - ../packages/client/dist:/usr/share/nginx/html:ro
-      # Uncomment for SSL certs:
-      # - ./ssl:/etc/nginx/ssl:ro
     depends_on:
       - server
