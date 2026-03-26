@@ -174,8 +174,7 @@ async function joinRoom(
       roomHash,
       publicKey: peers.ownPubKeyHex,
     });
-  } catch (err) {
-    console.error('[drelm] joinRoom failed:', err);
+  } catch {
     showJoinError(el, 'failed to connect');
   }
 }
