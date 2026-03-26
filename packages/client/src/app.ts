@@ -27,7 +27,8 @@ function getWebSocketUrl(): string {
 
   if (isOnion) return `ws://${host}/ws`;
   if (isSecure) return `wss://${host}/ws`;
-  return `ws://${host}:3000`;
+  if (host === 'localhost' || host === '127.0.0.1') return `ws://${host}:3000`;
+  return `ws://${host}/ws`;
 }
 
 const WS_URL = getWebSocketUrl();
