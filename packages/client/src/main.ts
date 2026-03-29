@@ -3,10 +3,12 @@ import { createApp } from './app.js';
 import { createFishBackground } from './fish.js';
 import { createWaves } from './waves.js';
 import { attachBlockCursor } from './cursor.js';
+import { attachThemeToggle } from './theme.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const el = getElements();
   createApp(el);
+  attachThemeToggle();
 
   // Terminal block cursors
   attachBlockCursor(el.phraseInput);

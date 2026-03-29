@@ -10,8 +10,8 @@
  * Purely decorative. No external requests. Uses requestAnimationFrame.
  */
 
-// Character density ramp — more space, softer peaks (no heavy glyphs)
-const RAMP = '                        .....,,,,====++';
+// Character density ramp — sparse blanks at troughs, denser glyphs at crests
+const RAMP = '                        . , ~ . ,, ~~ == +';
 
 // Wave layer definition — each contributes to the 2D scalar field
 interface WaveLayer {
@@ -46,8 +46,8 @@ export function createWaves(container: HTMLElement): () => void {
     lineHeight: '1.05',
     fontSize: '13px',
     fontFamily: 'inherit',
-    color: '#ffffff',
-    opacity: '0.09',
+    color: 'var(--fg)',
+    opacity: 'var(--wave-opacity, 0.09)',
     whiteSpace: 'pre',
     pointerEvents: 'none',
     userSelect: 'none',

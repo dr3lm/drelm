@@ -11,7 +11,6 @@ export interface UIElements {
   messages: HTMLElement;
   messageInput: HTMLInputElement;
   userCount: HTMLElement;
-  leaveButton: HTMLElement;
   brandButton: HTMLElement;
   userList: HTMLElement;
 }
@@ -28,7 +27,6 @@ export function getElements(): UIElements {
     messages: document.getElementById('messages')!,
     messageInput: document.getElementById('message-input') as HTMLInputElement,
     userCount: document.getElementById('user-count')!,
-    leaveButton: document.getElementById('leave-btn')!,
     brandButton: document.getElementById('room-brand')!,
     userList: document.getElementById('user-list')!,
   };
@@ -107,14 +105,14 @@ export function updatePhraseHint(el: UIElements, length: number): void {
 
   el.phraseHint.classList.add('visible');
 
-  if (length < 16) {
-    el.phraseHint.textContent = 'short phrase';
+  if (length < 8) {
+    el.phraseHint.textContent = 'low strength';
     el.phraseHint.style.color = '#444444';
-  } else if (length < 25) {
-    el.phraseHint.textContent = 'longer is stronger';
+  } else if (length < 16) {
+    el.phraseHint.textContent = 'medium strength';
     el.phraseHint.style.color = '#555555';
   } else {
-    el.phraseHint.textContent = 'strong phrase';
+    el.phraseHint.textContent = 'high strength';
     el.phraseHint.style.color = '#888888';
   }
 }

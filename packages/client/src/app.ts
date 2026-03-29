@@ -95,10 +95,6 @@ export function createApp(el: UIElements): void {
     }
   });
 
-  el.leaveButton.addEventListener('click', () => {
-    leaveRoom(state, el);
-  });
-
   el.brandButton.addEventListener('click', () => {
     leaveRoom(state, el);
   });

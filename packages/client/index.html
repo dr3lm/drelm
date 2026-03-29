@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>drelm</title>
+  <script>if(localStorage.getItem('drelm-theme')==='light')document.documentElement.classList.add('light')</script>
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -14,12 +15,26 @@
     :root {
       --bg: #000000;
       --fg: #ffffff;
-      --muted: #555555;
-      --border: #333333;
+      --muted: #888888;
+      --border: #555555;
       --surface: #0a0a0a;
       --own-bg: #111111;
       --accent: #ffffff;
       --font: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+      color-scheme: dark;
+    }
+
+    :root.light {
+      --bg: #f5f5f0;
+      --fg: #111111;
+      --muted: #888888;
+      --border: #cccccc;
+      --surface: #ebebeb;
+      --own-bg: #e4e4de;
+      --accent: #111111;
+      --fish-opacity-scale: 2.5;
+      --wave-opacity: 0.18;
+      color-scheme: light;
     }
 
     html, body {
@@ -30,6 +45,7 @@
       font-size: 15px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.2s, color 0.2s;
     }
 
     ::selection {
@@ -117,10 +133,113 @@
     }
 
     #landing-version {
-      font-size: 11px;
+      font-size: 9px;
       font-weight: 400;
       color: var(--muted);
       letter-spacing: 0.1em;
+      margin-top: 1px;
+      pointer-events: none;
+      display: block;
+    }
+
+    #title-group {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .theme-switch {
+      width: 44px;
+      position: relative;
+      height: 22px;
+      background: var(--bg);
+      border: 1px solid #444444;
+      border-radius: 999px;
+      cursor: pointer;
+      padding: 0;
+      transition: border-color 0.15s;
+    }
+
+    .theme-switch:hover {
+      border-color: #888888;
+    }
+
+    :root.light .theme-switch {
+      border-color: #aaaaaa;
+    }
+
+    :root.light .theme-switch:hover {
+      border-color: #555555;
+    }
+
+    .switch-moon,
+    .switch-sun {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      line-height: 1;
+      color: #444444;
+      transition: color 0.15s;
+      pointer-events: none;
+    }
+
+    .theme-switch:hover .switch-moon,
+    .theme-switch:hover .switch-sun {
+      color: #888888;
+    }
+
+    :root.light .switch-moon,
+    :root.light .switch-sun {
+      color: #aaaaaa;
+    }
+
+    :root.light .theme-switch:hover .switch-moon,
+    :root.light .theme-switch:hover .switch-sun {
+      color: #555555;
+    }
+
+    .switch-moon { left: 3px; }
+    .switch-sun  { right: 3px; }
+
+    .switch-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 5px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #444444;
+      transition: left 0.2s ease, background 0.15s;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .thumb-moon,
+    .thumb-sun {
+      font-size: 7px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .thumb-sun { display: none; }
+    :root.light .thumb-moon { display: none; }
+    :root.light .thumb-sun { display: block; }
+
+    .theme-switch:hover .switch-thumb {
+      background: #888888;
+    }
+
+    :root.light .switch-thumb {
+      left: calc(100% - 16px);
+      background: #aaaaaa;
+    }
+
+    :root.light .theme-switch:hover .switch-thumb {
+      background: #555555;
     }
 
     #logo-placeholder {
@@ -146,7 +265,7 @@
     }
 
     #phrase-input:focus {
-      background: #0a0a0a;
+      background: var(--surface);
     }
 
     .input-cursor-wrap {
@@ -269,6 +388,7 @@
       color: var(--fg);
     }
 
+
     #room-header .meta {
       display: flex;
       align-items: center;
@@ -278,29 +398,6 @@
       color: var(--fg);
     }
 
-    #leave-btn {
-      background: none;
-      border: none;
-      border-radius: 0;
-      color: var(--fg);
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 700;
-      padding: 4px 0;
-      cursor: pointer;
-      min-height: 44px;
-      min-width: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      letter-spacing: 0.15em;
-      opacity: 0.4;
-      transition: opacity 0.15s;
-    }
-
-    #leave-btn:hover {
-      opacity: 1;
-    }
 
     /* --- Chat column --- */
     #chat-column {
@@ -364,7 +461,7 @@
     }
 
     #message-input {
-      background: #0a0a0a;
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 0;
       color: var(--fg);
@@ -430,7 +527,7 @@
     }
 
     .user-entry.anonymous {
-      color: #2a2a2a;
+      color: var(--border);
       font-style: italic;
     }
 
@@ -472,8 +569,18 @@
   <div id="landing">
     <div id="fish-bg"></div>
     <div id="landing-header">
-      <a id="landing-title" href="/">drelm</a>
-      <span id="landing-version">0.1.a</span>
+      <div id="title-group">
+        <a id="landing-title" href="/">drelm</a>
+        <span id="landing-version">0.1.a</span>
+      </div>
+      <button class="theme-switch" aria-label="toggle light/dark mode">
+        <span class="switch-moon">☽</span>
+        <span class="switch-thumb">
+          <span class="thumb-moon">☽</span>
+          <span class="thumb-sun">☀</span>
+        </span>
+        <span class="switch-sun">☀</span>
+      </button>
     </div>
     <div id="landing-content">
       <div id="logo-placeholder"></div>
@@ -493,11 +600,18 @@
   <!-- Room -->
   <div id="room" class="hidden">
     <div id="room-header">
-      <button id="room-brand">drelm</button>
+      <button id="room-brand">exit</button>
       <div class="meta">
         <span><span id="user-count">1</span> in room.</span>
       </div>
-      <button id="leave-btn">leave</button>
+      <button class="theme-switch" aria-label="toggle light/dark mode">
+        <span class="switch-moon">☽</span>
+        <span class="switch-thumb">
+          <span class="thumb-moon">☽</span>
+          <span class="thumb-sun">☀</span>
+        </span>
+        <span class="switch-sun">☀</span>
+      </button>
     </div>
     <div id="room-body">
       <div id="chat-column">
