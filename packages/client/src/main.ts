@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   createApp(el);
 
   // Terminal block cursors
-  attachBlockCursor(el.phraseInput, { autoFocus: true });
+  attachBlockCursor(el.phraseInput);
   attachBlockCursor(el.messageInput);
 
   // Spawn the fish school in the landing background

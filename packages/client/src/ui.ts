@@ -1,6 +1,7 @@
 export interface UIElements {
   // Landing
   landing: HTMLElement;
+  landingContent: HTMLElement;
   phraseInput: HTMLInputElement;
   joinError: HTMLElement;
   phraseHint: HTMLElement;
@@ -18,6 +19,7 @@ export interface UIElements {
 export function getElements(): UIElements {
   return {
     landing: document.getElementById('landing')!,
+    landingContent: document.getElementById('landing-content')!,
     phraseInput: document.getElementById('phrase-input') as HTMLInputElement,
     joinError: document.getElementById('join-error')!,
     phraseHint: document.getElementById('phrase-hint')!,
@@ -35,6 +37,7 @@ export function getElements(): UIElements {
 export function showLanding(el: UIElements): void {
   el.landing.classList.remove('hidden');
   el.room.classList.add('hidden');
+  el.landingContent.classList.remove('fading');
   el.phraseInput.value = '';
   el.phraseInput.focus();
 }

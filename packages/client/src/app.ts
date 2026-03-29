@@ -80,6 +80,8 @@ export function createApp(el: UIElements): void {
 
       hideJoinError(el);
       phraseMask.clear();
+      el.phraseInput.blur();
+      el.landingContent.classList.add('fading');
       joinRoom(phrase, state, el);
     }
   });

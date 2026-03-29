@@ -4,10 +4,9 @@ Hash: SHA512
 drelm warrant canary
 ========================
 
-As of 2026-03-23, the operators of this drelm instance:
+As of 2026-03-29, the operators of this drelm instance:
 
-1. Have NOT received any National Security Letters or FISA court
-   orders.
+1. Have not received any government or law enforcement data requests.
 
 2. Have NOT received any gag orders preventing disclosure of
    government data requests.
@@ -47,9 +46,9 @@ Operator PGP key fingerprint:
 Contact: drelmorg@proton.me
 -----BEGIN PGP SIGNATURE-----
 
-iJEEARYKADkWIQSqWbN+Pt2UC0x+j3Yhib+C9RgBbQUCacHyTxsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwwLDMACgkQIYm/gvUYAW1qRQEA89f6KDbrFuas42p/y3Bo
-XT43N0QrW82TbVKsXdNoXF8BANoKPmbIByP2pe4Gy8vi/1lGPNehAQL3Yg03Dp5l
-SLEH
-=ZvV3
+iJEEARYKADkWIQSqWbN+Pt2UC0x+j3Yhib+C9RgBbQUCacljrBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwwLDMACgkQIYm/gvUYAW0liQD+M4XsfCrdOoX39+qXm6t3
+wdmY5u0MgK/YqRFNIeNPRYAA+gNMkOzLLJs3L5j6zngQJaJnRJoVSSc9x+Sl4s2p
+gJUI
+=kYg5
 -----END PGP SIGNATURE-----

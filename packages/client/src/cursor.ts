@@ -5,7 +5,6 @@
 
 export function attachBlockCursor(
   input: HTMLInputElement,
-  options?: { autoFocus?: boolean },
 ): void {
   const cursor = document.createElement('span');
   cursor.className = 'block-cursor';
@@ -47,9 +46,8 @@ export function attachBlockCursor(
     cursor.classList.remove('visible');
   });
 
-  if (options?.autoFocus) {
-    input.focus();
-    cursor.classList.add('visible');
-  }
+  input.focus();
+  cursor.classList.add('visible');
+  
   update();
 }
