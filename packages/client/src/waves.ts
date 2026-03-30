@@ -69,24 +69,30 @@ export function createWaves(container: HTMLElement): () => void {
   }
   measure();
 
+  // Random phase offset per layer — seeded fresh each page load so the
+  // wave field never starts in the same position twice.
+  const phaseRng = new Uint32Array(9);
+  crypto.getRandomValues(phaseRng);
+  const rndPhase = (i: number): number => ((phaseRng[i] as number) / 0xffffffff) * 2 * Math.PI;
+
   // Generate wave layers — wide range of scales and speeds.
   // Each layer breathes: amplitude swells up and recedes, frequency
   // widens and tightens, so wave bands expand as they crest then
   // thin out as they pass — like real rolling water.
   const layers: WaveLayer[] = [
     // Long slow groundswell — nearly vanishes at trough, blooms at peak
-    { kx: 0.04,  ky: 0.01,   speed: 0.3,  amp: 1.0,  phase: 0,   breathRate: 0.13, breathDepth: 0.90, freqBreathRate: 0.06,  freqBreathDepth: 0.3 },
-    { kx: 0.035, ky: -0.02,  speed: 0.25, amp: 0.7,  phase: 3.1, breathRate: 0.11, breathDepth: 0.88, freqBreathRate: 0.05,  freqBreathDepth: 0.25 },
+    { kx: 0.04,  ky: 0.01,   speed: 0.3,  amp: 1.0,  phase: rndPhase(0), breathRate: 0.13, breathDepth: 0.90, freqBreathRate: 0.06,  freqBreathDepth: 0.3 },
+    { kx: 0.035, ky: -0.02,  speed: 0.25, amp: 0.7,  phase: rndPhase(1), breathRate: 0.11, breathDepth: 0.88, freqBreathRate: 0.05,  freqBreathDepth: 0.25 },
     // Medium swells — main visual rhythm, quick fade
-    { kx: 0.09,  ky: 0.025,  speed: 0.7,  amp: 0.6,  phase: 1.8, breathRate: 0.18, breathDepth: 0.92, freqBreathRate: 0.09,  freqBreathDepth: 0.2 },
-    { kx: 0.12,  ky: -0.018, speed: 0.85, amp: 0.5,  phase: 4.5, breathRate: 0.22, breathDepth: 0.90, freqBreathRate: 0.11,  freqBreathDepth: 0.2 },
-    { kx: 0.08,  ky: 0.045,  speed: 0.6,  amp: 0.45, phase: 2.6, breathRate: 0.16, breathDepth: 0.91, freqBreathRate: 0.08,  freqBreathDepth: 0.15 },
+    { kx: 0.09,  ky: 0.025,  speed: 0.7,  amp: 0.6,  phase: rndPhase(2), breathRate: 0.18, breathDepth: 0.92, freqBreathRate: 0.09,  freqBreathDepth: 0.2 },
+    { kx: 0.12,  ky: -0.018, speed: 0.85, amp: 0.5,  phase: rndPhase(3), breathRate: 0.22, breathDepth: 0.90, freqBreathRate: 0.11,  freqBreathDepth: 0.2 },
+    { kx: 0.08,  ky: 0.045,  speed: 0.6,  amp: 0.45, phase: rndPhase(4), breathRate: 0.16, breathDepth: 0.91, freqBreathRate: 0.08,  freqBreathDepth: 0.15 },
     // Short wind chop — fast pulse, almost fully disappears between beats
-    { kx: 0.2,   ky: 0.03,   speed: 1.3,  amp: 0.25, phase: 5.6, breathRate: 0.30, breathDepth: 0.93, freqBreathRate: 0.15,  freqBreathDepth: 0.15 },
-    { kx: 0.17,  ky: -0.04,  speed: 1.5,  amp: 0.2,  phase: 0.4, breathRate: 0.36, breathDepth: 0.92, freqBreathRate: 0.18,  freqBreathDepth: 0.1 },
-    { kx: 0.25,  ky: 0.02,   speed: 1.7,  amp: 0.15, phase: 3.8, breathRate: 0.32, breathDepth: 0.93, freqBreathRate: 0.2,   freqBreathDepth: 0.1 },
+    { kx: 0.2,   ky: 0.03,   speed: 1.3,  amp: 0.25, phase: rndPhase(5), breathRate: 0.30, breathDepth: 0.93, freqBreathRate: 0.15,  freqBreathDepth: 0.15 },
+    { kx: 0.17,  ky: -0.04,  speed: 1.5,  amp: 0.2,  phase: rndPhase(6), breathRate: 0.36, breathDepth: 0.92, freqBreathRate: 0.18,  freqBreathDepth: 0.1 },
+    { kx: 0.25,  ky: 0.02,   speed: 1.7,  amp: 0.15, phase: rndPhase(7), breathRate: 0.32, breathDepth: 0.93, freqBreathRate: 0.2,   freqBreathDepth: 0.1 },
     // Cross-swell — slow diagonal, deep fade
-    { kx: 0.06,  ky: 0.07,   speed: 0.5,  amp: 0.3,  phase: 1.1, breathRate: 0.12, breathDepth: 0.88, freqBreathRate: 0.05,  freqBreathDepth: 0.2 },
+    { kx: 0.06,  ky: 0.07,   speed: 0.5,  amp: 0.3,  phase: rndPhase(8), breathRate: 0.12, breathDepth: 0.88, freqBreathRate: 0.05,  freqBreathDepth: 0.2 },
   ];
 
   // Normalize amplitudes so total range is -1..1
