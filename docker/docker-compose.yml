@@ -6,6 +6,10 @@ services:
     restart: unless-stopped
     environment:
       - PORT=3000
+      - TOR_ENABLED=true
+      - TOR_HOSTNAME_FILE=/var/lib/tor/drelm/hostname
+    volumes:
+      - /var/lib/tor/drelm/hostname:/var/lib/tor/drelm/hostname:ro
 
   nginx:
     image: nginx:alpine
